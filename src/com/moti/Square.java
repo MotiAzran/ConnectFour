@@ -3,11 +3,19 @@ package com.moti;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Represents a board square, where the disc
+ * will enter
+ */
 public class Square extends JPanel {
 
     final static int SQUARE_LENGTH = 100;
-    private Color _disc_color;
+    private Color _discColor;
 
+    /**
+     * Initialize square
+     * initialize size, and color
+     */
     Square() {
         // Set square size
         setPreferredSize(new Dimension(SQUARE_LENGTH, SQUARE_LENGTH));
@@ -15,31 +23,26 @@ public class Square extends JPanel {
         // Set square appearance
         setBackground(Color.BLACK);
 
-        _disc_color = Color.WHITE;
+        _discColor = Color.WHITE;
     }
 
-    public void set_disc_color(Color color) {
-        _disc_color = color;
+    public void setDiscColor(Color color) {
+        _discColor = color;
     }
 
-    public Color get_disc_color() {
-        return _disc_color;
+    public Color getDiscColor() {
+        return _discColor;
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Get square center coordinates
-        final int DISC_RADIUS = 75;
-        int xCenter = (SQUARE_LENGTH / 2) - (DISC_RADIUS / 2);
-        int yCenter = (SQUARE_LENGTH / 2) - (DISC_RADIUS / 2);
-
         // Draw disc
-        g.setColor(_disc_color);
-        g.fillOval(xCenter, yCenter, DISC_RADIUS, DISC_RADIUS);
+        g.setColor(_discColor);
+        g.fillOval(0, 0, getWidth(), getHeight());
 
         // Draw disc stroke
         g.setColor(Color.BLACK);
-        g.drawOval(xCenter, yCenter, DISC_RADIUS, DISC_RADIUS);
+        g.drawOval(0, 0, getWidth(), getHeight());
     }
 }

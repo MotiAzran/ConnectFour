@@ -5,25 +5,33 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Represent the board of the game
+ */
 public class Board extends JPanel {
 
     private final Color PLAYER1_COLOR = Color.BLUE;
     private final String PLAYER1_COLOR_NAME = "Blue";
     private final Color PLAYER2_COLOR = Color.RED;
     private final String PLAYER2_COLOR_NAME = "Red";
+    private final int DISCS_IN_A_ROW_TO_WIN = 4;
     private int _rows;
     private int _cols;
     private Square[][] _board;
-    private JButton[] _cols_buttons;
-    private Color _current_color;
-    private boolean _has_won;
+    private JButton[] _colsButtons;
+    private Color _currentColor;
+    private boolean _hasWon;
 
-
+    /**
+     * Initialize the board panel
+     * @param rows number of rows of the board
+     * @param cols number of columns of the board
+     */
     Board(int rows, int cols) {
         _rows = rows;
         _cols = cols;
-        _current_color = PLAYER1_COLOR;
-        _has_won = false;
+        _currentColor = PLAYER1_COLOR;
+        _hasWon = false;
 
         setLayout(new GridLayout(_rows+1, _cols));
 
@@ -36,63 +44,95 @@ public class Board extends JPanel {
             }
         }
 
-        // Add adding disc buttons to panel
-        _cols_buttons = new JButton[_cols];
+        // Add "adding disc" buttons to panel
+        _colsButtons = new JButton[_cols];
         for (int i = 0; i < _cols; ++i) {
-            _cols_buttons[i] = new JButton(Integer.toString(i+1));
-            _cols_buttons[i].setBackground(_current_color);
-            _cols_buttons[i].setForeground(Color.BLACK);
-            _cols_buttons[i].addActionListener(new BoardButtonListener(i));
+            _colsButtons[i] = new JButton(Integer.toString(i+1));
+            _colsButtons[i].setBackground(_currentColor);
+            _colsButtons[i].setForeground(Color.BLACK);
+            _colsButtons[i].addActionListener(new BoardButtonListener(i));
 
-            add(_cols_buttons[i]);
+            add(_colsButtons[i]);
         }
     }
 
-    public void clear_board() {
+    /**
+     * Clears all discs from the board
+     */
+    public void clearBoard() {
         for (int i = 0; i < _rows; ++i) {
             for (int j = 0; j < _cols; ++j) {
-                _board[i][j].set_disc_color(Color.WHITE);
+                _board[i][j].setDiscColor(Color.WHITE);
             }
         }
 
         // Set members to their default values
-        _current_color = PLAYER1_COLOR;
-        _has_won = false;
+        _currentColor = PLAYER1_COLOR;
+        _hasWon = false;
     }
 
+    /**
+     * Change the colors of the buttons
+     * @param g graphics object
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         // Set buttons color to the current color
-        _set_buttons_color();
+        _setButtonsColor();
     }
 
-    private String _get_current_color_name() {
-        if (PLAYER1_COLOR == _current_color) {
+    /**
+     * Get the name of current color
+     * @return name of the current color
+     */
+    private String _getCurrentColorName() {
+        if (PLAYER1_COLOR == _currentColor) {
             return PLAYER1_COLOR_NAME;
         } else {
             return PLAYER2_COLOR_NAME;
         }
     }
 
-    private void _set_buttons_color() {
+    /**
+     * Set all the buttons color
+     * to the current color
+     */
+    private void _setButtonsColor() {
         for (int i = 0; i < _cols; ++i) {
-            _cols_buttons[i].setBackground(_current_color);
+            _colsButtons[i].setBackground(_currentColor);
         }
     }
 
+    /**
+     * listener for the buttons
+     */
     private class BoardButtonListener implements ActionListener {
+        /**
+         * the class adds a disc if there is available square
+         * and checks for win
+         */
 
         int _column;
 
+        /**
+         * Initialize the listener
+         * @param column the column of the button
+         */
         BoardButtonListener(int column) {
             _column = column;
         }
 
-        private int _get_available_square_row(int col_index) {
+        /**
+         * Get available row in some column
+         * @param col_index the column to search for square
+         * @return if there is no available square returns -1,
+         *          otherwise the row number of the available square
+         */
+        private int _getAvailableSquareRow(int col_index) {
             // Search for an empty square
             for (int i = (_rows - 1); i >= 0; --i) {
-                if (Color.WHITE == _board[i][col_index].get_disc_color()) {
+                if (Color.WHITE == _board[i][col_index].getDiscColor()) {
                     return i;
                 }
             }
@@ -100,25 +140,33 @@ public class Board extends JPanel {
             return -1;
         }
 
-        private void _swap_current_color() {
-            if (PLAYER1_COLOR == _current_color) {
-                _current_color = PLAYER2_COLOR;
+        /**
+         * Swap the current color to the other one
+         */
+        private void _swapCurrentColor() {
+            if (PLAYER1_COLOR == _currentColor) {
+                _currentColor = PLAYER2_COLOR;
             } else {
-                _current_color = PLAYER1_COLOR;
+                _currentColor = PLAYER1_COLOR;
             }
         }
 
-        private boolean _check_victory_row() {
+        /**
+         * Check if there is a 4-streak of discs
+         * in the same color in some row
+         * @return true if there is a 4-streak, otherwise false
+         */
+        private boolean _checkVictoryRow() {
             for (int i = 0; i < _rows; ++i) {
-                int disc_counter = 0;
+                int discCounter = 0;
                 for (int j = 0; j < _cols; ++j) {
-                    if (_board[i][j].get_disc_color() == _current_color) {
-                        ++disc_counter;
+                    if (_board[i][j].getDiscColor() == _currentColor) {
+                        ++discCounter;
                     } else {
-                        disc_counter = 0;
+                        discCounter = 0;
                     }
 
-                    if (4 == disc_counter) {
+                    if (DISCS_IN_A_ROW_TO_WIN == discCounter) {
                         return true;
                     }
                 }
@@ -127,17 +175,22 @@ public class Board extends JPanel {
             return false;
         }
 
-        private boolean _check_victory_column() {
+        /**
+         * Check if there is 4-streak if discs in
+         * the same color in some column
+         * @return true if the 4-streak found, otherwise false
+         */
+        private boolean _checkVictoryColumn() {
             for (int i = 0; i < _cols; ++i) {
-                int disc_counter = 0;
+                int discCounter = 0;
                 for (int j = 0; j < _rows; ++j) {
-                    if (_board[j][i].get_disc_color() == _current_color) {
-                        ++disc_counter;
+                    if (_board[j][i].getDiscColor() == _currentColor) {
+                        ++discCounter;
                     } else {
-                        disc_counter = 0;
+                        discCounter = 0;
                     }
 
-                    if (4 == disc_counter) {
+                    if (DISCS_IN_A_ROW_TO_WIN == discCounter) {
                         return true;
                     }
                 }
@@ -146,24 +199,30 @@ public class Board extends JPanel {
             return false;
         }
 
-        public boolean _check_victory_diagonal_forward() {
-            int diags_number = _rows + _cols - 1;
+        /**
+         * Check if there is a 4-streak of
+         * discs in the same color in some diagonal
+         * from left to right
+         * @return true if the 4-streak is found, otherwise false
+         */
+        public boolean _checkVictoryDiagonalForward() {
+            int diagsNumber = _rows + _cols - 1;
 
             // Iterate on diagonals from left to right
-            for (int diag_index = 0; diag_index < diags_number; ++diag_index) {
-                int disc_counter = 0;
-                int row_start = Math.min(diag_index, _rows - 1);
-                int row_stop = Math.max(0, diag_index - _cols + 1);
-                for (int row = row_start; row >= row_stop; --row) {
-                    int col = diag_index - row;
+            for (int diagIndex = 0; diagIndex < diagsNumber; ++diagIndex) {
+                int discCounter = 0;
+                int rowStart = Math.min(diagIndex, _rows - 1);
+                int rowStop = Math.max(0, diagIndex - _cols + 1);
+                for (int row = rowStart; row >= rowStop; --row) {
+                    int col = diagIndex - row;
 
-                    if (_board[row][col].get_disc_color() == _current_color) {
-                        ++disc_counter;
+                    if (_board[row][col].getDiscColor() == _currentColor) {
+                        ++discCounter;
                     } else {
-                        disc_counter = 0;
+                        discCounter = 0;
                     }
 
-                    if (4 == disc_counter) {
+                    if (DISCS_IN_A_ROW_TO_WIN == discCounter) {
                         return true;
                     }
                 }
@@ -172,23 +231,27 @@ public class Board extends JPanel {
             return false;
         }
 
-        public boolean _check_victory_diagonal_backword() {
-            int diags_number = _rows + _cols - 1;
-
+        /**
+         * Check if there is a 4-streak of
+         * discs in the same color in some diagonal
+         * from right to left
+         * @return true if the 4-streak is found, otherwise false
+         */
+        public boolean _checkVictoryDiagonalBackward() {
             // Iterate on diagonals from left to right
             for(int i = (_cols - 1); i >= 0; --i) {
-                int disc_counter = 0;
+                int discCounter = 0;
                 for(int j = 0; j < _rows; ++j) {
                     int row = j;
                     int col = i + j;
                     if(col < _cols) {
-                        if (_board[row][col].get_disc_color() == _current_color) {
-                            ++disc_counter;
+                        if (_board[row][col].getDiscColor() == _currentColor) {
+                            ++discCounter;
                         } else {
-                            disc_counter = 0;
+                            discCounter = 0;
                         }
 
-                        if (4 == disc_counter) {
+                        if (4 == discCounter) {
                             return true;
                         }
                     } else {
@@ -198,15 +261,15 @@ public class Board extends JPanel {
             }
 
             for(int i = 1; i < _rows; i++) {
-                int disc_counter = 0;
+                int discCounter = 0;
                 for(int j = i, k = 0; j < _rows && k < _cols; j++, k++) {
-                    if (_board[j][k].get_disc_color() == _current_color) {
-                        ++disc_counter;
+                    if (_board[j][k].getDiscColor() == _currentColor) {
+                        ++discCounter;
                     } else {
-                        disc_counter = 0;
+                        discCounter = 0;
                     }
 
-                    if (4 == disc_counter) {
+                    if (4 == discCounter) {
                         return true;
                     }
                 }
@@ -215,39 +278,55 @@ public class Board extends JPanel {
             return false;
         }
 
-        private boolean _check_victory_diagonal() {
-            return _check_victory_diagonal_forward() || _check_victory_diagonal_backword();
+        /**
+         * Checks if there is a 4-streak of discs
+         * in the same color in some diagonal
+         * @return true if the 4-streak found, otherwise false
+         */
+        private boolean _checkVictoryDiagonal() {
+            return _checkVictoryDiagonalForward() || _checkVictoryDiagonalBackward();
         }
 
-        private boolean _check_victory() {
-            return _check_victory_row() || _check_victory_column() || _check_victory_diagonal();
+        /**
+         * Checks if there is a 4-streak of discs
+         * in the same color in some row, column or diagonal
+         * @return true if the 4-streak found, otherwise false
+         */
+        private boolean _checkVictory() {
+            return _checkVictoryRow() || _checkVictoryColumn() || _checkVictoryDiagonal();
         }
 
+        /**
+         * The button pressed, add the disc if can
+         * and check for winning
+         * @param e Event information
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (_has_won) {
+            if (_hasWon) {
                 return;
             }
 
-            int row = _get_available_square_row(_column);
+            int row = _getAvailableSquareRow(_column);
             if (-1 == row) {
                 JOptionPane.showMessageDialog(null, "The column is full");
                 return;
             }
 
             // Add disc to the available square
-            _board[row][_column].set_disc_color(_current_color);
+            _board[row][_column].setDiscColor(_currentColor);
 
             repaint();
 
-            _has_won = _check_victory();
-            if (_has_won) {
-                String victory_msg = String.format("%s player has won", _get_current_color_name());
+            // Check for victory
+            _hasWon = _checkVictory();
+            if (_hasWon) {
+                String victory_msg = String.format("%s player has won", _getCurrentColorName());
                 JOptionPane.showMessageDialog(null, victory_msg);
                 return;
             }
 
-            _swap_current_color();
+            _swapCurrentColor();
 
             repaint();
         }

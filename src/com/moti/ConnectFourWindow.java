@@ -5,17 +5,25 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The main window of the program
+ * holds the board and all the buttons
+ */
 public class ConnectFourWindow extends JFrame {
-
     private final static int ROWS = 5;
     private final static int COLS = 7;
     final static int WINDOW_WIDTH = Square.SQUARE_LENGTH * COLS;
     final static int WINDOW_HEIGHT = Square.SQUARE_LENGTH * (ROWS + 1) + ButtonsPanel.PANEL_HEIGHT;
     private final int CLEAR_BUTTON_COL = 3;
-    private Board _board_panel;
-    private ButtonsPanel _buttons_panel;
-    private JButton _clear_button;
+    private Board _boardPanel;
+    private ButtonsPanel _buttonsPanel;
+    private JButton _clearButton;
 
+    /**
+     * Initialize the main window,
+     * set it preferences and add the
+     * game objects
+     */
     ConnectFourWindow() {
         // Set window title
         super("Connect four");
@@ -28,31 +36,31 @@ public class ConnectFourWindow extends JFrame {
         setLocationRelativeTo(null);
 
         // Initialize clear button
-        _clear_button = new JButton("clear");
-        _clear_button.setBackground(Color.WHITE);
-        _clear_button.setForeground(Color.BLACK);
+        _clearButton = new JButton("clear");
+        _clearButton.setBackground(Color.WHITE);
+        _clearButton.setForeground(Color.BLACK);
 
-        _clear_button.addActionListener(new ActionListener() {
+        _clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                _board_panel.clear_board();
+                _boardPanel.clearBoard();
 
                 repaint();
             }
         });
 
         // Initialize panels
-        _board_panel = new Board(ROWS, COLS);
-        _buttons_panel = new ButtonsPanel(COLS);
+        _boardPanel = new Board(ROWS, COLS);
+        _buttonsPanel = new ButtonsPanel(COLS);
 
         // Add clear button in the middle of the buttons panel
-        _buttons_panel.add_in_panel(CLEAR_BUTTON_COL, _clear_button, BorderLayout.CENTER);
+        _buttonsPanel.addInPanel(CLEAR_BUTTON_COL, _clearButton, BorderLayout.CENTER);
 
         // Set frame layout
         setLayout(new BorderLayout());
 
         // Add panels to frame
-        add(_board_panel, BorderLayout.CENTER);
-        add(_buttons_panel, BorderLayout.SOUTH);
+        add(_boardPanel, BorderLayout.CENTER);
+        add(_buttonsPanel, BorderLayout.SOUTH);
     }
 }
