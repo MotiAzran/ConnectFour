@@ -1,5 +1,3 @@
-package com.moti;
-
 /**
  * The main class of the program
  */
@@ -11,9 +9,9 @@ public class Main {
      */
     public static void main(String[] args) {
         // Create the game window
-        ConnectFourWindow MainWindow = new ConnectFourWindow();
+        ConnectFourWindow mainWindow = new ConnectFourWindow();
 
         // Show the window
-        MainWindow.setVisible(true);
+        mainWindow.setVisible(true);
     }
 }

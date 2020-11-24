@@ -1,5 +1,3 @@
-package com.moti;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,36 +7,35 @@ import java.awt.*;
  */
 public class Square extends JPanel {
 
-    final static int SQUARE_LENGTH = 100;
-    private Color _discColor;
+    private Color discColor;
 
     /**
      * Initialize square
      * initialize size, and color
      */
-    Square() {
+    Square(int squareSize) {
         // Set square size
-        setPreferredSize(new Dimension(SQUARE_LENGTH, SQUARE_LENGTH));
+        setPreferredSize(new Dimension(squareSize, squareSize));
 
         // Set square appearance
         setBackground(Color.BLACK);
 
-        _discColor = Color.WHITE;
+        discColor = Color.WHITE;
     }
 
     public void setDiscColor(Color color) {
-        _discColor = color;
+        discColor = color;
     }
 
     public Color getDiscColor() {
-        return _discColor;
+        return discColor;
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         // Draw disc
-        g.setColor(_discColor);
+        g.setColor(discColor);
         g.fillOval(0, 0, getWidth(), getHeight());
 
         // Draw disc stroke
