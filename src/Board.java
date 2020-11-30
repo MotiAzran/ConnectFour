@@ -268,6 +268,8 @@ public class Board extends JPanel {
         /**
          * Checks if there is a 4-streak of discs
          * in the same color in some diagonal
+         * @param row the row index of the last inserted disc
+         * @param col the column index of the last inserted disc
          * @return true if the 4-streak found, otherwise false
          */
         private boolean checkVictoryDiagonal(int row, int col) {
